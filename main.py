@@ -93,6 +93,8 @@ def check(figure, cort, field):
     count = 1
     j = cort[0]
     i = cort[1]
+    
+    # побочная диагональ
 
     if i - 1 >= 0 and j + 1 <= 14 and field[i - 1][j + 1] == figure:
         count += 1

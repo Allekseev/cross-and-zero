@@ -90,7 +90,6 @@ class AI:
         self.name=name
         self.humanTemplates1()
         self.end=False
-
     def humanTemplates1(self):
         def angle(arr):
             l=len(arr)
@@ -108,21 +107,41 @@ class AI:
         self.templates=[]
 
         template=['I','I','I','I','I']
+        self.templates.append(Template([template, ], 9))
+        template = angle(template)
+        self.templates.append(Template(template, 9))
+
+        template=['I','e','e','e','e']
         self.templates.append(Template([template, ], 8))
         template = angle(template)
         self.templates.append(Template(template, 8))
 
-        template=['I','e','e','e','e']
+        template = ['e', 'I', 'e', 'e', 'e']
+        self.templates.append(Template([template, ], 8))
+        template = angle(template)
+        self.templates.append(Template(template, 8))
+
+        template = ['e', 'e', 'I', 'e', 'e']
+        self.templates.append(Template([template, ], 8))
+        template = angle(template)
+        self.templates.append(Template(template, 8))
+
+        template = ['0', 'I', 'I', 'I', 'I', '0']
         self.templates.append(Template([template, ], 7))
         template = angle(template)
         self.templates.append(Template(template, 7))
 
-        template = ['0', 'I', 'I', 'I', 'I', '0']
+        template=['I','e','e','e','0']
         self.templates.append(Template([template, ], 6))
         template = angle(template)
         self.templates.append(Template(template, 6))
 
-        template=['I','e','e','e','0']
+        template = ['0', 'e', 'I', 'e', 'e']
+        self.templates.append(Template([template, ], 5))
+        template = angle(template)
+        self.templates.append(Template(template, 5))
+
+        template = ['e', 'I', 'e', 'e', '0']
         self.templates.append(Template([template, ], 5))
         template = angle(template)
         self.templates.append(Template(template, 5))
@@ -147,6 +166,11 @@ class AI:
         template = angle(template)
         self.templates.append(Template(template, 1))
 
+        template = ['I', 'e']
+        self.templates.append(Template([template, ], 1))
+        template = angle(template)
+        self.templates.append(Template(template, 1))
+
         self.templates.append(Template([['I', ], ], 0))
 
     def changeMap(self,map):
@@ -156,7 +180,7 @@ class AI:
                 newMap[x][y]=self.remap[newMap[x][y]]
         return newMap
 
-    def simpleTurn(self,map):
+        def simpleTurn(self,map):
         newMap=self.changeMap(map)
         for template in self.templates:
             template.searching(newMap)
@@ -164,7 +188,16 @@ class AI:
                 print(template.authority)
                 if template.authority==self.templates[0].authority:
                     self.end=True
-                return choices(template.points)[0]
+                bestPoints=[]
+                maximum=-1
+                for point in template.points:
+                    minimum=min((point[0],point[1],14-point[0],14-point[1]))
+                    if maximum < minimum:
+                        maximum = minimum
+                        bestPoints=[point,]
+                    elif maximum == minimum:
+                        bestPoints.append(point)
+                return choices(bestPoints)[0]
         return  0/0
 
 

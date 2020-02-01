@@ -1,6 +1,7 @@
 import pygame
 import sys
 from random import randint
+from AlekseevAI1 import AI
 
 pygame.init()
 pygame.font.init()
@@ -322,51 +323,43 @@ def gamepc():
     for i in range(16):
         pygame.draw.line(sc, (0, 0, 0), [0, y], [weight, y], 3)
         y += 40
+    done_game = True
+    ai1=AI('1','o')
 
-    done_gamepc = True
-    while done_gamepc:
-        for event_pc in pygame.event.get():
-            if event_pc.type == pygame.QUIT:
+    while done_game:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 sys.exit()
-            elif event_pc.type == pygame.KEYDOWN:
-                if event_pc.key == pygame.K_ESCAPE:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
                     menu()
-
             if not game_over:
-                if event_pc.type == pygame.MOUSEBUTTONDOWN and count % 2 == 1:
-                    mouse[0] = event_pc.pos[0] // 40
-                    mouse[1] = event_pc.pos[1] // 40
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse[0] = event.pos[0] // 40
+                    mouse[1] = event.pos[1] // 40
 
                     if field[mouse[1]][mouse[0]] == 0:
-                        cross(mouse)
-                        field[mouse[1]][mouse[0]] = 'x'
-                        figure = 'x'
+                        if count % 2 == 1:
+                            cross(mouse)
+                            field[mouse[1]][mouse[0]] = 'x'
+                            figure = 'x'
+                            game_over = check(figure, mouse, field)
+                        else:
+                            aiTurn=ai1.simpleTurn(field)
+                            aiTurn=[aiTurn[1],aiTurn[0]]
+                            zero(aiTurn)
+                            field[aiTurn[1]][aiTurn[0]] = 'o'
+                            figure = 'o'
+                            game_over = check(figure, aiTurn, field)
                         count += 1
-                        game_over = check(figure, mouse, field)
 
-                # далее пишу ИИ
-
-                elif count == 2:
-
-                    mouse[0] = randint(0, 14)
-                    mouse[1] = randint(0, 14)
-                    if field[mouse[1]][mouse[0]] == 0:
-                        pygame.time.delay(300)
-                        zero(mouse)
-                        field[mouse[1]][mouse[0]] = 'o'
-                        figure = 'o'
-                        game_over = check(figure, mouse, field)
-                        count += 1
-                elif count % 2 == 0:
-                    pass
-
-                if game_over:
-                    pygame.draw.rect(sc, (55, 55, 55), (130, 210, 340, 100))
-                    pygame.draw.rect(sc, font_color, (130, 210, 340, 100), 4)
-                    DrawText('Выиграл: ' + figure, font, sc, 165, 235)
-
-        clock.tick(20)
+                    if game_over:
+                        pygame.draw.rect(sc, (55, 55, 55), (130, 210, 340, 100))
+                        pygame.draw.rect(sc, font_color, (130, 210, 340, 100), 4)
+                        DrawText('Выиграл: ' + figure, font, sc, 165, 235)
         pygame.display.update()
+        clock.tick(20)
 
 #gamepp()
 #gamepc()

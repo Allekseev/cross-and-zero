@@ -84,9 +84,9 @@ class Template:
 class AI:
     def __init__(self,name,side):
         if side=='x':
-            self.remap = {'x': 'I', 'o': 'e', '.': '0'}
+            self.remap = {'x': 'I', 'o': 'e', 0: '0'}
         else:
-            self.remap = {'x': 'e', 'o': 'I', '.': '0'}
+            self.remap = {'x': 'e', 'o': 'I', 0: '0'}
         self.name=name
         self.humanTemplates1()
         self.end=False
@@ -200,25 +200,3 @@ class AI:
                         bestPoints.append(point)
                 return choices(bestPoints)[0]
         return  0/0
-
-
-map=[]
-for x in range(15):
-    ar=[]
-    for y in range(15):
-        ar.append('.')
-    map.append(ar)
-#print(a.points)
-for x in range(15):
-    print(map[x])
-ai1=AI('1','x')
-ai2=AI('2','o')
-print('0')
-while not(ai1.end or ai2.end):
-    point=ai1.simpleTurn(map)
-    map[point[0]][point[1]]='x'
-    point = ai2.simpleTurn(map)
-    map[point[0]][point[1]] = 'o'
-    for x in range(15):
-        print(map[x])
-    print()

@@ -44,7 +44,7 @@ class Template:
 
     def searching(self,map):
         #print(self.points)
-        self.points=[]
+        self.points={}
         for var in self.variants:
             area={}
             starts={}
@@ -69,8 +69,11 @@ class Template:
                             pTurns[start] = point
                         if flag:
                             if step == len(var[0])-1:
-                                if starts[start] and pTurns[start] not in self.points:
-                                    self.points.append(pTurns[start])
+                                if starts[start]:
+                                    if pTurns[start] not in self.points:
+                                        self.points[pTurns[start]] = 1
+                                    else:
+                                        self.points[pTurns[start]] += 1
                             else:
                                 newPoint = (start[0] + ((step + 1) % var[1]), start[1] + ((step + 1) // var[1]))
                                 if newPoint in newArea:
@@ -183,20 +186,32 @@ class AI:
 
     def simpleTurn(self,map):
         newMap=self.changeMap(map)
+        bestPoints = []
         for template in self.templates:
             template.searching(newMap)
-            if template.points:
-                print(template.authority)
-                if template.authority==self.templates[0].authority:
-                    self.end=True
-                bestPoints=[]
+            if len(bestPoints)==1:
+                return  bestPoints[0]
+            if not bestPoints:
+                for i in template.points:
+                    bestPoints.append(i)
+            maximum=-1
+            newBestpoints = []
+            for point in bestPoints:
+                if point in template.points:
+                    if template.points[point]>maximum:
+                        maximum=template.points[point]
+                        newBestpoints=[point,]
+                    elif template.points[point]==maximum:
+                        newBestpoints.append(point)
+            if newBestpoints:
+                bestPoints=newBestpoints
+            if template.authority==0:
                 maximum=-1
-                for point in template.points:
+                for point in newBestpoints:
                     minimum=min((point[0],point[1],14-point[0],14-point[1]))
                     if maximum < minimum:
                         maximum = minimum
                         bestPoints=[point,]
                     elif maximum == minimum:
                         bestPoints.append(point)
-                return choices(bestPoints)[0]
-        return  0/0
+        return choices(bestPoints)[0]
